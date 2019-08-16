@@ -1,33 +1,36 @@
-import React from 'react'
+import React from 'react';
 import Modal from 'react-modal';
-import { StyledStartButton} from '../static/styles/components/StyledStartButton'
-import { StyledModalBody } from '../static/styles/components/StyledTetris'
+import { StyledStartButton } from '../static/styles/components/StyledStartButton';
+import { StyledModalBody, StyledModalContent } from '../static/styles/components/StyledTetris';
 
 const customStyles = {
-	overlay: {
+	overlay: {},
+	content: {
+		width: '100vw',
+		height: '100vh',
+		background: '#000',
 		display: 'flex',
 		justifyContent: 'center',
-		alignItems: 'center'
-	},
-	content : {
-		background: '#fff',
-		padding: '20px 40px',
-		border: '1px solid #000'
+		alignItems: 'center',
+		flexDirection: 'column'
 	}
 };
 
-export default ({isOpen, onClickButton}) => (
+export default ({ isOpen, onClickButton }) => (
 	<Modal
 		style={customStyles}
 		ariaHideApp={false}
 		isOpen={isOpen}
 		contentLabel="Game Over"
-		closeTimeoutMS={200}
+		closeTimeoutMS={800}
 		className="modal"
 	>
 		<StyledModalBody>GAME OVER</StyledModalBody>
-		<StyledStartButton onClick={onClickButton}>
-			Okay
-		</StyledStartButton>
+		<StyledModalContent>Play Again?</StyledModalContent>
 	</Modal>
-)
+);
+
+/*
+
+		<StyledStartButton onClick={onClickButton}>Okay</StyledStartButton>
+*/
