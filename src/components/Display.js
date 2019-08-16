@@ -1,4 +1,13 @@
 import React from 'react';
-import { StyledDisplay } from '../static/styles/components/StyledDisplay';
+import { StyledDisplay, StyledLabel } from '../static/styles/components/StyledDisplay';
 
-export const Display = ({ gameOver, text }) => <StyledDisplay gameOver={gameOver}>{text}</StyledDisplay>;
+const Display = ({ gameOver, label, text }) => {
+    return (
+        <StyledDisplay gameOver={gameOver}>
+            {label}
+            <StyledLabel>{text}</StyledLabel>
+        </StyledDisplay>
+    )
+};
+
+export default React.memo(Display)

@@ -1,8 +1,8 @@
 import React from 'react';
-import { Cell } from './Cell';
+import Cell from './Cell';
 import { StyledStage } from '../static/styles/components/StyledStage';
 
-export const Stage = ({ stage }) => (
+const Stage = ({ stage }) => (
 	<StyledStage width={stage[0].length} height={stage.length}>
 		{stage.map((row) =>
 			row.map((cell, index) => {
@@ -11,3 +11,5 @@ export const Stage = ({ stage }) => (
 		)}
 	</StyledStage>
 );
+
+export default React.memo(Stage)
