@@ -1,7 +1,6 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import Modal from 'react-modal';
-import { StyledStartButton } from '../static/styles/components/StyledStartButton';
-import { StyledModalBody, StyledModalContent } from '../static/styles/components/StyledTetris';
+import { StyledModalOptions, StyledModalBody, StyledModalContent, StyledModalButtons } from '../static/styles/components/StyledTetris';
 
 const customStyles = {
 	overlay: {},
@@ -16,21 +15,29 @@ const customStyles = {
 	}
 };
 
-export default ({ isOpen, onClickButton }) => (
-	<Modal
-		style={customStyles}
-		ariaHideApp={false}
-		isOpen={isOpen}
-		contentLabel="Game Over"
-		closeTimeoutMS={800}
-		className="modal"
-	>
-		<StyledModalBody>GAME OVER</StyledModalBody>
-		<StyledModalContent>Play Again?</StyledModalContent>
-	</Modal>
-);
+export default ({ isOpen, onClickButton }) => {
+	const optRef = useRef(null)
 
-/*
+	const onModalOpen = () => {
+		optRef.current.focus()
+	}
 
-		<StyledStartButton onClick={onClickButton}>Okay</StyledStartButton>
-*/
+	return (
+		<Modal
+			style={customStyles}
+			ariaHideApp={false}
+			isOpen={isOpen}
+			contentLabel="Game Over"
+			closeTimeoutMS={800}
+			className="modal"
+			onAfterOpen={onModalOpen}
+		>
+			<StyledModalBody>GAME OVER</StyledModalBody>
+			<StyledModalContent>Play Again?</StyledModalContent>
+			<StyledModalOptions>
+				<StyledModalButtons ref={optRef} onClick={() => onClickButton(true)}>Yes</StyledModalButtons>
+				<StyledModalButtons onClick={() => onClickButton(false)}>No</StyledModalButtons>
+			</StyledModalOptions>
+		</Modal>
+	);
+}

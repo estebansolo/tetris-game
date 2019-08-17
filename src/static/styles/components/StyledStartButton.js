@@ -12,4 +12,8 @@ export const StyledStartButton = styled.button`
 	font-size: 0.8rem;
 	outline: none;
 	cursor: pointer;
+
+	&::-moz-focus-inner {
+		border: 0;
+	}
 `;

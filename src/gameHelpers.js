@@ -1,5 +1,27 @@
 export const STAGE_WIDTH = 12;
 export const STAGE_HEIGHT = 20;
+export const STROKES = [
+	{
+		label: "Left",
+		text: "Move Left"
+	},
+	{
+		label: "Right",
+		text: "Move Right"
+	},
+	{
+		label: "Top",
+		text: "Rotate"
+	},
+	{
+		label: "Bottom",
+		text: "Move Down"
+	},
+	{
+		label: "P",
+		text: "Pause"
+	}
+]
 
 export const createStage = () => {
 	return Array.from(Array(STAGE_HEIGHT), () => {

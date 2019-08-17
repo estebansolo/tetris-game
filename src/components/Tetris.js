@@ -1,13 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { createStage, checkCollision } from '../gameHelpers';
-import { useSpring, animated } from 'react-spring';
 
 // Components
+import GameInfo from './GameInfo'
 import Stage from './Stage';
 import Modal from './Modal';
 import Footer from './Footer';
-import Display from './Display';
-import StartButton from './StartButton';
 
 // Custom Hooks
 import { useGameStatus } from '../hooks/useGameStatus';
@@ -16,10 +14,11 @@ import { usePlayer } from '../hooks/usePlayer';
 import { useStage } from '../hooks/useStage';
 
 // Styled
-import { StyledTitle, StyledTetrisWrapper, StyledTetris } from '../static/styles/components/StyledTetris';
+import { StyledTetrisWrapper, StyledTetris } from '../static/styles/components/StyledTetris';
 
 const Tetris = () => {
 	const stageRef = useRef(null);
+	const [onPause, setOnPause] = useState(false)
 	const [ highScore, setHighScore ] = useState(localStorage.getItem('TetrisGameHS') || 0);
 	const [ startedGame, setStartedGame ] = useState(false);
 	const [ dropTime, setDropTime ] = useState(null);
@@ -53,7 +52,7 @@ const Tetris = () => {
 		if (rows > (level + 1) * 10) {
 			setLevel((prev) => prev + 1);
 			// Also Increase Speed
-			setDropTime(600 / (level + 1) + 200);
+			setDropTime(100 / (level + 1) + 200);
 		}
 
 		if (!checkCollision(player, stage, { x: 0, y: 1 })) {
@@ -70,15 +69,22 @@ const Tetris = () => {
 		}
 	};
 
+	const closeModal = (newGame) => {
+		setIsOpenModal(false);
+		if(newGame){
+			startGame()
+		}
+	}
+
 	const dropPlayer = () => {
 		setDropTime(null);
 		drop();
 	};
 
 	const keyUp = ({ keyCode }) => {
-		if (!gameOver) {
+		if (!gameOver && !onPause) {
 			if (keyCode === 40) {
-				setDropTime(600 / (level + 1) + 200);
+				setDropTime(100 / (level + 1) + 200);
 			}
 		}
 	};
@@ -87,12 +93,13 @@ const Tetris = () => {
 		// Reset everything
 		setStage(createStage());
 		setTimeout(() => {
-			setDropTime(600);
+			setDropTime(300);
 		}, 500);
 
 		resetPlayer();
 		setGameOver(false);
 		setRows(0);
+		setOnPause(false)
 		setScore(0);
 		setLevel(1);
 		setButtonText('Restart Game');
@@ -103,23 +110,26 @@ const Tetris = () => {
 
 	const move = ({ keyCode }) => {
 		if (!gameOver) {
-			console.log(keyCode);
-			if (keyCode === 37) {
-				movePlayer(-1);
-			} else if (keyCode === 39) {
-				movePlayer(1);
-			} else if (keyCode === 40) {
-				dropPlayer();
-			} else if (keyCode === 38) {
-				playerRotate(stage, 1);
-			} else if (keyCode === 80) {
+			if (keyCode === 80) {
 				if (dropTime) {
 					setDropTime(null);
+					setOnPause(true)
 				} else {
-					setDropTime(600 / (level + 1) + 200);
+					setDropTime(100 / (level + 1) + 200);
+					setOnPause(false)
 				}
-			} else if (keyCode === 32) {
-				//setDropTime(0);
+			}
+
+			if(!onPause){
+				if (keyCode === 37) {
+					movePlayer(-1);
+				} else if (keyCode === 39) {
+					movePlayer(1);
+				} else if (keyCode === 40) {
+					dropPlayer();
+				} else if (keyCode === 38) {
+					playerRotate(stage, 1);
+				}
 			}
 		}
 	};
@@ -128,43 +138,12 @@ const Tetris = () => {
 		drop();
 	}, dropTime);
 
-	const spring = useSpring({
-		config: {
-			duration: 500
-		},
-		to: {
-			opacity: startedGame ? 1 : 0,
-			transform: startedGame ? 'translateX(0)' : 'translateX(30vw)',
-			display: startedGame ? 'block' : 'none'
-		}
-	});
-
 	return (
 		<StyledTetrisWrapper role="button" tabIndex="0" onKeyDown={(e) => move(e)} onKeyUp={keyUp}>
 			<StyledTetris>
-				<aside>
-					<StyledTitle>Tetris Game</StyledTitle>
-					<div>
-						<Display label="High Score" text={highScore} />
-						{startedGame && (
-							<React.Fragment>
-								<Display label="Score" text={score} />
-								<Display label="Rows" text={rows} />
-								<Display label="Level" text={level} />
-							</React.Fragment>
-						)}
-					</div>
-					<StartButton callback={startGame} text={buttonText} />
-				</aside>
-				<animated.div style={spring}>
-					<Stage stage={stage} stageRef={stageRef} />
-				</animated.div>
-				<Modal
-					isOpen={isOpenModal}
-					onClickButton={() => {
-						setIsOpenModal(false);
-					}}
-				/>
+				<GameInfo highScore={highScore} startedGame={startedGame} score={score} rows={rows} level={level} startGame={startGame} buttonText={buttonText}/>
+				<Stage stage={stage} stageRef={stageRef} startedGame={startedGame} onPause={onPause}/>
+				<Modal isOpen={isOpenModal} onClickButton={closeModal} />
 			</StyledTetris>
 			<Footer />
 		</StyledTetrisWrapper>
