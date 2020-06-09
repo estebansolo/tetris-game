@@ -1,6 +1,6 @@
 # Tetris Game
 
-See [Demo](https://simple-tetris.herokuapp.com/).
+See [Demo](http://game.estebansolorzano.com/).
 
 Tetris Game created in ReactJS from the [@weibenfalk](https://twitter.com/weibenfalk) course.
 
